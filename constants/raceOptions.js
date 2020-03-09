@@ -1,6 +1,15 @@
 const Joi = require("@hapi/joi");
 
-const raceOptions = Joi.string().valid(
+const raceOptionList = [
+  "American Indian",
+  "Asian",
+  "Black",
+  "Hispanic",
+  "Pacific Islander",
+  "White",
+];
+
+const validRaceValues = Joi.string().valid(
   "American Indian",
   "Asian",
   "Black",
@@ -9,4 +18,7 @@ const raceOptions = Joi.string().valid(
   "White",
 );
 
-module.exports = raceOptions;
+module.exports = {
+  raceOptionList,
+  validRaceValues,
+};
