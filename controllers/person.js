@@ -1,6 +1,8 @@
+const faker = require("faker");
+
 const database = require("../database");
 const person = require("../models/person");
-const faker = require("faker");
+const collection = database.ref("fakePersonList");
 
 const { ageOptionList } = require("../constants/ageOptions");
 const { disciplineOptionList } = require("../constants/disciplineOptions");
@@ -10,15 +12,13 @@ const { experienceOptionList } = require("../constants/experienceOptions");
 const { incomeOptionList } = require("../constants/incomeOptions");
 const { personalityOptionList } = require("../constants/personalityOptions");
 
-const pickRandomOption = require("./pickRandomOption");
-
-const collection = database.ref("fakePersonList");
+const pickRandomOption = require("../utils");
 
 const createFakePersonList = async (size) => {
   try {
     await collection.remove();
   } catch(error) {
-    console.log("ERROR: UNABLE TO DELETE DATABASE");
+    console.log("👎 ERROR: UNABLE TO DELETE DATABASE");
     console.log(error);
     return error;
   }
@@ -40,12 +40,26 @@ const createFakePersonList = async (size) => {
       await person.validateAsync(guest);
       await collection.push(guest);
     } catch(error) {
-      console.log("ERROR: UNABLE TO CREATE PERSON");
+      console.log("👎 ERROR: UNABLE TO CREATE PERSON");
       console.log(error);
       return error;
     }
   }
-  console.log("PERSON LIST CREATED!");
+  console.log(`👍 SUCCESS: A FAKE LIST OF ${size} PEOPLE WAS CREATED`);
 };
 
-module.exports = createFakePersonList;
+const getFakePersonList = async () => {
+  try {
+    const fakePersonList = await collection.once("value");
+    return fakePersonList.val();
+  } catch(error) {
+    console.log("👎 ERROR: UNABLE TO GET FAKE PERSON LIST");
+    console.log(error);
+    return error;
+  }
+};
+
+module.exports = {
+  createFakePersonList,
+  getFakePersonList,
+};

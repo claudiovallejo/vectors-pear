@@ -1,25 +1,12 @@
-// DELETE EXISTING FAKE PERSON LIST & CREATE NEW FAKE PERSON LIST
-// const createFakePersonList = require("./utils/createFakePersonList");
-// createFakePersonList(4);
+const { getFakePersonList } = require("./controllers/person");
+const { calculatePairScores } = require("./utils");
 
-// PULL EXISTING FAKE PERSON LIST
-// CONVERT LIST INTO AN ARRAY
-// CALCULATE PAIR_SCORES FOR EACH PERSON & UPDATE RECORD IN DATABASE
-const database = require("./database");
-const calculatePairScores = require("./utils/calculatePairScores");
-const collection = database.ref("fakePersonList");
-
-const getFakePersonList = async () => {
-  try {
-    const fakePersonList = await collection.once("value");
-    const listWithScores = calculatePairScores(fakePersonList.val());
-    for (let [id, person] of Object.entries(listWithScores)) {
-      console.log(person.potentialPairScores);
+getFakePersonList()
+  .then(result => {
+    const list = calculatePairScores(result);
+    for (let [, person] of Object.entries(list)) {
+      console.log("====== PERSON ======");
+      console.table(person.potentialPairScores);
+      console.log("====================");
     }
-  } catch(error) {
-    console.log("ERROR GETTING FAKE LIST");
-    console.log(error);
-  }
-};
-
-getFakePersonList();
+  }).catch(error => console.log(error));

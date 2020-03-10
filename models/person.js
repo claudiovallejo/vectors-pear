@@ -14,10 +14,6 @@ const person = Joi.object({
     id: Joi.string().required(),
     score: Joi.number().required(),
   }).allow(null),
-  potentialPairScores: Joi.array().items(Joi.object({
-    id: Joi.string().required(),
-    score: Joi.number().required(),
-  })).allow(null),
   age: validAgeValues,
   discipline: validDisciplineValues,
   race: validRaceValues,
