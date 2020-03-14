@@ -6,10 +6,12 @@ const { validGenderValues } = require("../constants/genderOptions");
 const { validExperienceValues } = require("../constants/experienceOptions");
 const { validIncomeValues } = require("../constants/incomeOptions");
 const { validPersonalityValues } = require("../constants/personalityOptions");
+const { validTypeValues } = require("../constants/typeOptions");
 
 const person = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().required(),
+  type: validTypeValues,
   pair: Joi.object({
     id: Joi.string().required(),
     score: Joi.number().required(),

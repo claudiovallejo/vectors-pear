@@ -18,39 +18,56 @@ const calculatePairScore = (person1, person2) => {
   return score;
 };
 
-const calculatePairScores = (personList) => {
-  for (let [, person] of Object.entries(personList)) {
-    person.potentialPairScores = new Array();
-  }
-
-  for (let [personId, person] of Object.entries(personList)) {
-    for (let [pairId, pair] of Object.entries(personList)) {
-      if (personId !== pairId) {
-        if (pair.potentialPairScores.length === 0) {
-          person.potentialPairScores.push({
-            id: pairId,
-            score: calculatePairScore(person, pair),
-          });
-        } else {
-          for (let k = 0; k < pair.potentialPairScores.length; k++) {
-            const pairScore = pair.potentialPairScores[k];
-            const scoreHasNotBeenCalculatedForId = person.potentialPairScores.find(score => score.id !== pairScore.id);
-            if (personId !== pairScore.id && scoreHasNotBeenCalculatedForId) {
-              person.potentialPairScores.push({
-                id: pairId,
-                score: calculatePairScore(person, pair),
-              });
-            }
-          }
-        }
+const calculatePairScores = (mentors, mentees) => {
+  for (let [mentorId, mentor] of Object.entries(mentors)) {
+    if (mentor.potentialPairScores === undefined) {
+      mentor.potentialPairScores = new Array();
+    }
+    for (let [menteeId, mentee] of Object.entries(mentees)) {
+      if (mentorId !== menteeId) {
+        mentor.potentialPairScores.push({
+          id: menteeId,
+          score: calculatePairScore(mentor, mentee),
+        });
       }
     }
   }
-  return personList;
+  return { mentors, mentees };
+};
+
+const setPair = (personList, personId, personPair) => {
+  for (let [id, person] of Object.entries(personList)) {
+    if (id === personId) {
+      person.pair = personPair;
+      return person;
+    }
+  }
+}
+
+const setPairs = (mentors, mentees) => {
+  console.log(mentors);
+  // for (let [, mentor] of Object.entries(mentors)) {
+  //   if (mentor.pair === undefined) {
+  //     console.log(mentor);
+  //     let bestPair = { id: "", score: 0 };
+  //     for (let i = 0; i < mentor.potentialPairScores.length; i++) {
+  //       const potentialPair = potentialPairScores[i];
+  //       if (potentialPair.score > bestPair.score) {
+  //         bestPair.id = potentialPair.id;
+  //         bestPair.score = potentialPair.score;
+  //       }
+  //     }
+  //     if (bestPair.id !== "" && bestPair.score !== 0) {
+  //       mentor.pair = bestPair;
+  //       setPair(menteeList, bestPair.id, bestPair);
+  //     }
+  //   }
+  // }
 };
 
 module.exports = {
   pickRandomOption,
   calculatePairScore,
   calculatePairScores,
+  setPairs,
 };
