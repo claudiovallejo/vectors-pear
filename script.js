@@ -6,6 +6,7 @@ const {
   convertObjectToArray,
   calculatePotentialMatchScores,
   matchMentorsAndMentees,
+  logGuestListStats,
 } = require("./utils");
 
 getFakePersonList()
@@ -18,7 +19,8 @@ getFakePersonList()
       listWithPotentialMatches.mentors,
       listWithPotentialMatches.mentees,
     );
-    listWithMatches.mentors.forEach(mentor => {
-      console.table(mentor.match);
-    });
+    logGuestListStats(
+      listWithMatches.mentors,
+      listWithMatches.mentees,
+    );
   }).catch(error => console.log(error));
