@@ -1,17 +1,27 @@
+// const { createFakePersonList } = require("./controllers/person");
+// createFakePersonList(5,9);
+
 const { getFakePersonList } = require("./controllers/person");
 const {
-  calculatePairScores,
-  setPairs,
-  personStats,
+  convertObjectToArray,
+  calculatePotentialMatchScores,
+  matchMentorsAndMentees,
 } = require("./utils");
 
 getFakePersonList()
   .then(result => {
-    const list = calculatePairScores(result.mentors, result.mentees);
-    // const scores = setPairs(list.mentors, list.mentees);
-    console.log(list.mentors);
-    // console.log(scores.mentors);
-    // for (let [, mentor] of Object.entries(scores.mentors)) {
-    //   console.table(mentor.pair);
-    // }
+    const listWithPotentialMatches = calculatePotentialMatchScores(
+      convertObjectToArray(result.mentors),
+      convertObjectToArray(result.mentees),
+    );
+    const listWithMatches = matchMentorsAndMentees(
+      listWithPotentialMatches.mentors,
+      listWithPotentialMatches.mentees,
+    );
+    // listWithPotentialMatches.mentors.forEach(mentor => {
+    //   console.table(mentor.potentialMatchScores);
+    // });
+    listWithMatches.mentors.forEach(mentor => {
+      console.table(mentor.match);
+    });
   }).catch(error => console.log(error));
