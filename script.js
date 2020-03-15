@@ -18,9 +18,6 @@ getFakePersonList()
       listWithPotentialMatches.mentors,
       listWithPotentialMatches.mentees,
     );
-    // listWithPotentialMatches.mentors.forEach(mentor => {
-    //   console.table(mentor.potentialMatchScores);
-    // });
     listWithMatches.mentors.forEach(mentor => {
       console.table(mentor.match);
     });

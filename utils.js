@@ -46,24 +46,36 @@ const calculatePotentialMatchScores = (mentors, mentees) => {
 };
 
 const isPotentialMatchMatched = (mentors, menteeId) => {
-  mentors.forEach(mentor => {
-    if (mentor.match && mentor.match.id === menteeId) {
+  for (var i = 0; i < mentors.length; i++) {
+    if (mentors[i].match && mentors[i].match.id === menteeId) {
+      console.log(menteeId, " HAS BEEN MATCHED");
       return true;
     }
-  });
+  }
+
   return false;
 };
 
 const setBestMentorMatch = (mentors, mentor) => {
-  mentor.potentialMatchScores.forEach(potentialMatch => {
-    if (!isPotentialMatchMatched(mentors,potentialMatch.id)) {
-      mentor.match = potentialMatch;
+  for (var i = 0; i < mentor.potentialMatchScores.length; i++) {
+    console.log("POTENTIAL MATCH #", i);
+    const potentialMatchHasMatch = isPotentialMatchMatched(
+      mentors,
+      mentor.potentialMatchScores[i].id
+    );
+
+    if (!potentialMatchHasMatch) {
+      mentor.match = mentor.potentialMatchScores[i];
+      console.log(mentor.potentialMatchScores[i].id, " IS NOW A MATCH");
+      return;
     }
-  });
+  }
 };
 
 const matchMentorsAndMentees = (mentors, mentees) => {
-  mentors.forEach(mentor => setBestMentorMatch(mentors, mentor));
+  for (var i = 0; i < mentors.length; i++) {
+    setBestMentorMatch(mentors, mentors[i]);
+  }
   // mentees.forEach(mentee => setMenteePair(mentors, mentee));
   return { mentors, mentees };
 };
