@@ -1,3 +1,11 @@
+const { ageOptionList } = require("./constants/ageOptions");
+const { disciplineOptionList } = require("./constants/disciplineOptions");
+const { raceOptionList } = require("./constants/raceOptions");
+const { genderOptionList } = require("./constants/genderOptions");
+const { experienceOptionList } = require("./constants/experienceOptions");
+const { incomeOptionList } = require("./constants/incomeOptions");
+const { personalityOptionList } = require("./constants/personalityOptions");
+
 const convertObjectToArray = (object) => {
   const array = new Array();
   for (let [id, data] of Object.entries(object)) {
@@ -105,27 +113,74 @@ const getMatchScoreCount = (mentors, score, isInclusive) => {
 };
 
 const getMatchScoreDistribution = (mentors) => {
-  const scoreLog = new Array(7);
-  let distributionMessage = "";
+  const scoreLog = {
+    "7": 0,
+    "6": 0,
+    "5": 0,
+    "4": 0,
+    "3": 0,
+    "2": 0,
+    "1": 0,
+  };
   for (var i = 0; i < mentors.length; i++) {
     const matchScore = mentors[i].match.score;
-    const totalAtIndex = scoreLog[matchScore - 1];
-    scoreLog.splice(matchScore - 1, 1, totalAtIndex > 0 ? totalAtIndex + 1 : 1);
+    scoreLog[matchScore]++;
   }
-  for (var i = 0; i < scoreLog.length; i++) {
-    const percentage = scoreLog[i] !== undefined
-      ? `(${Math.floor(scoreLog[i]/mentors.length * 100)}%)`
-      : "";
-    const scoreValue = scoreLog[i] !== undefined
-      ? scoreLog[i]
-      : 0;
-    const score = `     Score ${i + 1}: ${scoreValue} ${percentage}`;
-    distributionMessage += score;
-    if (i !== scoreLog.length - 1) {
-      distributionMessage += "\n";
+  return scoreLog;
+};
+
+const createAttributeLog = (array) => {
+  const log = new Object();
+  for (var i = 0; i < array.length; i++) {
+    log[array[i]] = 0;
+  }
+  return log;
+};
+
+const setTraitList = (trait) => {
+  switch (trait) {
+    case "age":
+      return ageOptionList;    
+    case "discipline":
+      return disciplineOptionList;
+    case "race":
+        return raceOptionList;
+    case "gender":
+      return genderOptionList;
+    case "experience":
+      return experienceOptionList;
+    case "income":
+      return incomeOptionList;
+    case "personality":
+      return personalityOptionList;f
+    default:
+      console.log("ERROR: Please provide a valid trait name");
+  }
+};
+
+const getGuestTraitAttributeDistribution = (mentors, mentees, trait) => {
+  const guests = mentors.concat(mentees);
+  let traitList = setTraitList(trait);
+  const log = createAttributeLog(traitList);
+  for (var i = 0; i < guests.length; i++) {
+    if (guests[i].match.id) {
+      log[guests[i][trait]]++;
     }
   }
-  return distributionMessage;
+  return log;
+};
+
+const getMatchList = (mentors, mentees) => {
+  const matchList = new Array();
+  for (var i = 0; i < mentors.length; i++) {
+    const match = new Object();
+    match.mentor = mentors[i].name;
+    const mentee = mentees.find(mentee => mentee.id === mentors[i].match.id);
+    match.mentee = mentee.name;
+    match.score = mentors[i].match.score;
+    matchList.push(match);
+  }
+  return matchList;
 };
 
 const logGuestListStats = (mentors, mentees) => {
@@ -136,7 +191,24 @@ const logGuestListStats = (mentors, mentees) => {
   console.log(`=> Total 7/7 pairs: ${getMatchScoreCount(mentors, 7, false)}`);
   console.log(`=> Total N/7 pairs: ${getMatchScoreCount(mentors, 6, true)}`);
   console.log(`=> Match score distribution:`);
-  console.log(getMatchScoreDistribution(mentors));
+  console.table(getMatchScoreDistribution(mentors));
+  console.log(`=> Guest attribute distribution:`);
+  console.log(`AGE:`)
+  console.table(getGuestTraitAttributeDistribution(mentors, mentees, "age"));
+  console.log(`DISCIPLINE:`)
+  console.table(getGuestTraitAttributeDistribution(mentors, mentees, "discipline"));
+  console.log(`GENDER:`)
+  console.table(getGuestTraitAttributeDistribution(mentors, mentees, "gender"));
+  console.log(`RACE:`)
+  console.table(getGuestTraitAttributeDistribution(mentors, mentees, "race"));
+  console.log(`EXPERIENCE:`)
+  console.table(getGuestTraitAttributeDistribution(mentors, mentees, "experience"));
+  console.log(`INCOME:`)
+  console.table(getGuestTraitAttributeDistribution(mentors, mentees, "income"));
+  console.log(`PERSONALITY:`)
+  console.table(getGuestTraitAttributeDistribution(mentors, mentees, "personality"));
+  console.log(`=> Match list:`)
+  console.table(getMatchList(mentors, mentees));
   console.log("====================");
 };
 

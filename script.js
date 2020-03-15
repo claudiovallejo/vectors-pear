@@ -1,5 +1,5 @@
 // const { createFakePersonList } = require("./controllers/person");
-// createFakePersonList(5,9);
+// createFakePersonList(200, 300);
 
 const { getFakePersonList } = require("./controllers/person");
 const {
