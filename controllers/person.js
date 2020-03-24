@@ -17,6 +17,11 @@ const { typeOptionList } = require("../constants/typeOptions");
 const { pickRandomOption } = require("../utils");
 
 const createFakePersonList = async (totalMentors, totalMentees) => {
+  if (totalMentors > totalMentees) {
+    console.log(" ERROR: TOTAL MENTEES MUST BE GREATER THAN TOTAL MENTORS");
+    return;
+  }
+
   try {
     await fakeMentorList.remove();
     await fakeMenteeList.remove();
@@ -24,11 +29,6 @@ const createFakePersonList = async (totalMentors, totalMentees) => {
     console.log("👎 ERROR: UNABLE TO DELETE DATABASE");
     console.log(error);
     return error;
-  }
-
-  if (totalMentors > totalMentees) {
-    console.log(" ERROR: TOTAL MENTEES MUST BE GREATER THAN TOTAL MENTORS");
-    return;
   }
 
   for (var i = 0; i < totalMentors; i++) {
